@@ -7,7 +7,8 @@ void conv_reorder(const float* in, float* out, const float* ker,
                   int H, int W, int K) {
     const int p = K / 2;
     const int in_stride = W + 2 * p;  // padded row stride
-    
+        
+    // ky, kx, oy, ox
     for (int oy = 0; oy < H; ++oy) {
         for (int ox = 0; ox < W; ++ox) {
             out[oy * W + ox] = 0;
@@ -24,3 +25,33 @@ void conv_reorder(const float* in, float* out, const float* ker,
         }
     }
 }
+
+//ky, kx, oy, ox
+// for (int oy = 0; oy < H; ++oy) {
+//     for (int ox = 0; ox < W; ++ox) {
+//         out[oy * W + ox] = 0;
+//     }
+// }
+// for (int ky = 0; ky < K; ++ky) {
+//     for (int kx = 0; kx < K; ++kx) {
+//         float kW = ker[ky * K + kx];
+//         for (int oy = 0; oy < H; ++oy) {
+//             for (int ox = 0; ox < W; ++ox) {
+//                 out[oy * W + ox] += in[(oy + ky) * in_stride + (ox + kx)] * kW;;
+//             }
+//         }
+//     }
+// }
+
+
+// for (int oy = 0; oy < H; ++oy) {
+//     for (int ox = 0; ox < W; ++ox) {
+//         float acc = 0.0f;
+//         for (int kx = 0; kx < K; ++kx) {
+//             for (int ky = 0; ky < K; ++ky) {
+//                 acc += in[(oy + ky) * in_stride + (ox + kx)] * ker[ky * K + kx];
+//             }
+//         }
+//         out[oy * W + ox] = acc;
+//     }
+// }
