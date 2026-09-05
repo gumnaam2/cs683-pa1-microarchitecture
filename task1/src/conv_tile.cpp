@@ -10,8 +10,8 @@ void conv_tile(const float* in, float* out, const float* ker,
                int H, int W, int K) {
     const int p = K / 2;
     const int in_stride = W + 2 * p;  // padded row stride
-    const int Tx = 64; //Tile size - x dirn
-    const int Ty = 64; //Tile size - y dirn
+    const int Tx = 128; //Tile size - x dirn
+    const int Ty = 16; //Tile size - y dirn
     float acc;
     int ox_end, oy_end;
     
@@ -24,17 +24,20 @@ void conv_tile(const float* in, float* out, const float* ker,
             //loads entire kernel
             //working set: Ty*Tx + (Ty + k - 1)*(Tx + k - 1) + k^2
             for (int oy = ty; oy < oy_end; ++oy) {
+                float* out_row = out + oy * W;
                 for (int ox = tx; ox < ox_end; ++ox) {
                     acc = 0.0f;
                     //load ifmap[oy -> (oy + ky)][ox -> ox + kx]
                     //H,W,k = 2048, 2048, 3 : stride = 2050
                     //load entire kernel: K^2 loads
                     for (int ky = 0; ky < K; ++ky) {
+                        const float* in_row = in + (oy + ky) * in_stride + ox;
+                        const float* ker_row = ker + ky * K;
                         for (int kx = 0; kx < K; ++kx) {
-                            acc += in[(oy + ky) * in_stride + (ox + kx)] * ker[ky * K + kx];
+                            acc += in_row[kx] * ker_row[kx];
                         }
                     }
-                    out[oy * W + ox] = acc;
+                    out_row[ox] = acc;
                 }
             }
         }
