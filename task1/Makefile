@@ -10,7 +10,8 @@
 # Do NOT add -march=native or -ftree-vectorize: the autograder uses exactly these flags.
 
 CXX      := g++
-CXXFLAGS := -std=c++17 -O2 -fno-tree-vectorize -mavx2 -mfma -Iinclude -Wall
+CXXFLAGS := -std=c++17 -O2 -fno-tree-vectorize -mavx2 -mfma -mavx512f -mavx512vl -mavx512bw -Iinclude -Wall
+# CXXFLAGS := -std=c++17 -O2 -fno-tree-vectorize -mavx2 -mfma -Iinclude -Wall
 LDFLAGS  :=
 
 BIN          := bin
