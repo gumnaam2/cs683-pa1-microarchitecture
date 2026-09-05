@@ -1,38 +1,91 @@
 // conv_unroll.cpp  STAGE 2: LOOP UNROLLING
 #include "convolution.h"
-#define kx(k, K) ((k) % (K))
-#define ky(k, K) ((k) / (K))
 
 void conv_unroll(const float* in, float* out, const float* ker,
                  int H, int W, int K) {
     const int p = K / 2;
     const int in_stride = W + 2 * p;  // padded row stride
 
-    
     for (int oy = 0; oy < H; ++oy) {
-        for (int ox = 0; ox < W; ++ox) {
-            // float acc = 0.0f;
-            int ky = 0; int kx = 0;
-            float psum0 = 0.0f, psum1 = 0.0f, psum2 = 0.0f, psum3 = 0.0f, psum4 = 0.0f;
-            float acc = 0.0f;
-            int k = 0;
-                        
-            for (int ky = 0; ky < K; ++ky) {
-                int kx = 0;
-                for (; kx + 3 <= K; kx += 3) {
-                    psum0 += in[(oy + ky) * in_stride + (ox + kx)] * ker[ky * K + kx];
-                    psum1 += in[(oy + ky) * in_stride + (ox + kx+1)] * ker[(ky) * K + kx+1];
-                    psum2 += in[(oy + ky) * in_stride + (ox + kx+2)] * ker[(ky) * K + kx+2];
-                }
+        int ox = 0;
+        float* out_row = out + oy * W;
 
-                for (; kx < K; kx += 1){
-                    acc += in[(oy + ky) * in_stride + (ox + kx)] * ker[ky * K + kx];
+        for (; ox + 4 <= W; ox += 4) {
+            float p0 = 0.0f, p1 = 0.0f, p2 = 0.0f, p3 = 0.0f;
+
+            for (int ky = 0; ky < K; ++ky) {
+                const float* in_row = in + (oy + ky) * in_stride + ox;
+                const float* ker_row = ker + ky * K;
+
+                for (int kx = 0; kx < K; ++kx) {
+                    const float kw = ker_row[kx];
+
+                    p0 += in_row[kx] * kw;
+                    p1 += in_row[kx + 1] * kw;
+                    p2 += in_row[kx + 2] * kw;
+                    p3 += in_row[kx + 3] * kw;
                 }
             }
-            out[oy * W + ox] = psum0 + psum1 + psum2 + psum3 + psum4 + acc;
+
+            out_row[ox] = p0;
+            out_row[ox + 1] = p1;
+            out_row[ox + 2] = p2;
+            out_row[ox + 3] = p3;
+        }
+
+        for (; ox < W; ++ox) {
+            float acc = 0.0f;
+
+            for (int ky = 0; ky < K; ++ky) {
+                const float* in_row = in + (oy + ky) * in_stride + ox;
+                const float* ker_row = ker + ky * K;
+
+                for (int kx = 0; kx < K; ++kx) {
+                    acc += in_row[kx] * ker_row[kx];
+                }
+            }
+
+            out_row[ox] = acc;
         }
     }
+
+    return;
 }
+
+// void conv_unroll(const float* in, float* out, const float* ker,
+//                  int H, int W, int K) {
+//     const int p = K / 2;
+//     const int in_stride = W + 2 * p;  // padded row stride
+
+    
+//     for (int oy = 0; oy < H; ++oy) {
+//         for (int ox = 0; ox < W; ++ox) {
+//             // int ky = 0; int kx = 0;
+//             float psum0 = 0.0f, psum1 = 0.0f, psum2 = 0.0f;
+//             float acc = 0.0f;
+//             // int k = 0;
+                        
+//             for (int ky = 0; ky < K; ++ky) {
+//                 const float* in_row = in + (oy + ky) * in_stride + ox;
+//                 const float* ker_row = ker + ky * K;
+
+//                 int kx = 0;
+//                 for (; kx + 3 <= K; kx += 3) {
+//                     psum0 += in_row[kx] * ker_row[kx];
+//                     psum1 += in_row[kx+1] * ker_row[kx+1];
+//                     psum2 += in_row[kx+2] * ker_row[kx+2];
+//                 }
+
+//                 for (; kx < K; kx += 1){
+//                     acc += in_row[kx] * ker_row[kx];
+//                 }
+//             }
+//             out[oy * W + ox] = psum0 + psum1 + psum2 + acc;
+//         }
+//     }
+
+//     return;
+// }
 
 // for (int kx = 0; kx < K; ++kx) {
 //     psum0 += in[(oy + ky) * in_stride + (ox + kx)] * ker[ky * K + kx];
