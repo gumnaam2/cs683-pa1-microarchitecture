@@ -3,15 +3,6 @@
 
 #include "convolution.h"
 
-void conv_simd128(const float* in, float* out, const float* ker,
-                  int H, int W, int K);
-                  
-void conv_simd256(const float* in, float* out, const float* ker,
-                  int H, int W, int K);
-
-void conv_simd512(const float* in, float* out, const float* ker,
-                  int H, int W, int K);
-
 void conv_simd(const float* in, float* out, const float* ker,
                int H, int W, int K) {
     conv_simd512(in, out, ker, H, W, K);

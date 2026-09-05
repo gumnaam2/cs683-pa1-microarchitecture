@@ -36,6 +36,9 @@ void conv_reorder(const float* in, float* out, const float* ker, int H, int W, i
 void conv_unroll(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_tile(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_simd(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_simd128(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_simd256(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_simd512(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_optimized(const float* in, float* out, const float* ker, int H, int W, int K);
 
 #endif  // CS683_PA1_CONVOLUTION_H
