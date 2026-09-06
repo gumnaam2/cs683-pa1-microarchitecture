@@ -3,7 +3,7 @@
 
 void conv_unroll(const float* in, float* out, const float* ker,
                  int H, int W, int K) {
-    conv_unroll24(in, out, ker, H, W, K);
+    conv_unroll32(in, out, ker, H, W, K);
 }
 
 void conv_unroll2(const float* in, float* out, const float* ker,

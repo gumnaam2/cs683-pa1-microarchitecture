@@ -40,6 +40,7 @@ void conv_unroll6(const float* in, float* out, const float* ker, int H, int W, i
 void conv_unroll8(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_unroll12(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_unroll14(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll16(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_unroll20(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_unroll24(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_unroll28(const float* in, float* out, const float* ker, int H, int W, int K);
