@@ -34,11 +34,31 @@ using ConvFn = void (*)(const float* in, float* out, const float* ker,
 void conv_naive(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_reorder(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_unroll(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll2(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll4(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll6(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll8(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll12(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll14(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll20(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll24(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll28(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_unroll32(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_tile(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_simd(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_simd128(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_simd256(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_simd512(const float* in, float* out, const float* ker, int H, int W, int K);
 void conv_optimized(const float* in, float* out, const float* ker, int H, int W, int K);
+void conv_optimized_2(const float* in, float* out, const float* ker,
+                          int H, int W, int K);
+void conv_optimized_4(const float* in, float* out, const float* ker,
+                          int H, int W, int K);
+void conv_optimized_8(const float* in, float* out, const float* ker,
+                          int H, int W, int K);
+void conv_optimized_16(const float* in, float* out, const float* ker,
+                           int H, int W, int K);
+void conv_optimized_24(const float* in, float* out, const float* ker,
+                           int H, int W, int K);
 
 #endif  // CS683_PA1_CONVOLUTION_H
