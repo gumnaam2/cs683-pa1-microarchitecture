@@ -31,12 +31,19 @@ using MatMulFn = void (*)(const float* A, const float* B, float* C,
 // The rest are student TODOs (see src/*.cpp). matmul_optimized is graded AND is the
 // kernel injected into llama.cpp.
 
+void set_prefetch_distance(int distance);
+void set_l1_prefetch_distance(int distance);
+void set_fill_level(int level); 
 void matmul_naive(const float* A, const float* B, float* C,
                   int M, int N, int K, int lda, int ldb, int ldc);
 void matmul_simd(const float* A, const float* B, float* C,
                  int M, int N, int K, int lda, int ldb, int ldc);
 void matmul_prefetch(const float* A, const float* B, float* C,
                      int M, int N, int K, int lda, int ldb, int ldc);
+void matmul_optimized4(const float* A, const float* B, float* C,
+                      int M, int N, int K, int lda, int ldb, int ldc);
+void matmul_optimized8(const float* A, const float* B, float* C,
+                      int M, int N, int K, int lda, int ldb, int ldc);
 void matmul_optimized(const float* A, const float* B, float* C,
                       int M, int N, int K, int lda, int ldb, int ldc);
 

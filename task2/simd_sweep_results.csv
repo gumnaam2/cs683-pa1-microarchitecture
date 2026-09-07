@@ -1,0 +1,3 @@
+size,simd_width,naive_time_ms,naive_instructions,simd_time_ms,simd_instructions,speedup
+4096,128,,,,,n/a
+4096,256,,,,,n/a
