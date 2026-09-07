@@ -61,5 +61,12 @@ void conv_optimized_16(const float* in, float* out, const float* ker,
                            int H, int W, int K);
 void conv_optimized_24(const float* in, float* out, const float* ker,
                            int H, int W, int K);
-
+void conv_optimized_tiled_simd(const float* in, float* out, const float* ker,
+                               int H, int W, int K);
+void conv_optimized_8_tiled(const float* in, float* out, const float* ker,
+                           int H, int W, int K);
+void conv_optimized_2row(const float* in, float* out, const float* ker,
+                         int H, int W, int K);
+void conv_optimized_2row_generic(const float* in, float* out,
+                                 const float* ker, int H, int W, int K);
 #endif  // CS683_PA1_CONVOLUTION_H

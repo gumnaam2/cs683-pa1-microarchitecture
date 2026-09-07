@@ -2,22 +2,17 @@
 
 #include "convolution.h"
 #include <algorithm>
-//There is notable variation between P-cores and E-cores for this task
-//In E-cores, the performance is improved by ~15%. In P-cores, it is worsened by ~20% for the same tile size
-//It is likely due to branching overhead and (from data) increased L1-icache misses - not immediately clear why
 
 void conv_tile(const float* in, float* out, const float* ker,
-               int H, int W, int K) {
+               int H, int W, int K, int Tx, int Ty) {
     const int p = K / 2;
     const int in_stride = W + 2 * p;  // padded row stride
-    const int Tx = 128; //Tile size - x dirn
-    const int Ty = 16; //Tile size - y dirn
     float acc;
     int ox_end, oy_end;
     
     for (int ty = 0; ty < H; ty += Ty){
+        oy_end = std::min(ty + Ty, H);
         for (int tx = 0; tx < W; tx += Tx){
-            oy_end = std::min(ty + Ty, H);
             ox_end = std::min(tx + Tx, W);
             //store to ofmap[ty -> ty + Ty - 1][tx -> tx + Tx - 1]
             //loads ifmap[ty -> ty + Ty + ky - 1][tx -> tx + Tx + kx - 1]
@@ -77,4 +72,11 @@ void conv_tile(const float* in, float* out, const float* ker,
     //         }
     //     }
     // }
+}
+
+void conv_tile(const float* in, float* out, const float* ker,
+               int H, int W, int K) {
+    int default_Tx = 2048;
+    int default_Ty = 128;
+    conv_tile(in, out, ker, H, W, K, default_Tx, default_Ty);
 }
