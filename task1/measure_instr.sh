@@ -5,6 +5,40 @@ set -u
 REPS=100
 BINARY="./bin/num_instr"
 IMPLEMENTATIONS=("naive" "128" "256" "512")
+DIMENSION_ARGS=()
+
+usage()
+{
+    echo "Usage: $0 [H W K]"
+}
+
+if (( $# != 0 && $# != 3 )); then
+    usage >&2
+    exit 1
+fi
+
+if (( $# == 3 )); then
+    H=$1
+    W=$2
+    K=$3
+
+    if [[ ! "$H" =~ ^[1-9][0-9]*$ ||
+          ! "$W" =~ ^[1-9][0-9]*$ ||
+          ! "$K" =~ ^[1-9][0-9]*$ ]]; then
+        echo "Error: H, W, and K must be positive integers." >&2
+        exit 1
+    fi
+    if (( W % 8 != 0 )); then
+        echo "Error: W ($W) must be a multiple of 8." >&2
+        exit 1
+    fi
+    if (( K % 2 == 0 )); then
+        echo "Error: K Size($K) must be odd." >&2
+        exit 1
+    fi
+
+    DIMENSION_ARGS=("$H" "$W" "$K")
+fi
 
 # Store results
 declare -A TOTAL_INSTRUCTIONS
@@ -24,6 +58,11 @@ fi
 sudo -v || exit 1
 
 echo "Measuring retired instructions..."
+if (( ${#DIMENSION_ARGS[@]} == 3 )); then
+    echo "Workload: H=${DIMENSION_ARGS[0]}, W=${DIMENSION_ARGS[1]}, K=${DIMENSION_ARGS[2]}"
+else
+    echo "Workload: num_instr defaults"
+fi
 echo
 
 for impl in "${IMPLEMENTATIONS[@]}"; do
@@ -36,7 +75,7 @@ for impl in "${IMPLEMENTATIONS[@]}"; do
     if ! sudo perf stat \
         -x ';' \
         -e instructions:u,cycles:u \
-        -- "$BINARY" "$impl" \
+        -- "$BINARY" "$impl" "${DIMENSION_ARGS[@]}" \
         > /dev/null 2> "$tmpfile"
     then
         echo "  ERROR: perf failed for implementation '$impl'."

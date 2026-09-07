@@ -8,6 +8,7 @@
 //   ./bin/num_instr 128
 //   ./bin/num_instr 256
 //   ./bin/num_instr 512
+//   ./bin/num_instr naive H W K
 
 #include <cstdio>
 #include <cstdlib>
@@ -47,7 +48,7 @@ static void usage(const char* prog)
     std::printf(
         "Usage:\n"
         "  %s naive|128|256|512\n"
-        "  %s naive|128|256|512 H W K [seed]\n",
+        "  %s naive|128|256|512 H W K\n",
         prog, prog
     );
 }
@@ -55,7 +56,7 @@ static void usage(const char* prog)
 
 int main(int argc, char** argv)
 {
-    if (argc < 2) {
+    if (argc != 2 && argc != 5) {
         usage(argv[0]);
         return 1;
     }
@@ -102,6 +103,25 @@ int main(int argc, char** argv)
     int K = kDefaultK;
 
     unsigned seed = kDefaultSeed;
+
+    if (argc == 5) {
+        H = std::atoi(argv[2]);
+        W = std::atoi(argv[3]);
+        K = std::atoi(argv[4]);
+
+        if (H <= 0 || W <= 0 || K <= 0) {
+            std::fprintf(stderr, "Error: H, W, and K must be positive.\n");
+            return 1;
+        }
+        if (W % 8 != 0) {
+            std::fprintf(stderr, "Error: W (%d) must be a multiple of 8.\n", W);
+            return 1;
+        }
+        if (K % 2 == 0) {
+            std::fprintf(stderr, "Error: K (%d) must be odd.\n", K);
+            return 1;
+        }
+    }
 
 
     float* img =
